@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+/__pycache__/
+__pycache__
+*.py[cod]
+*$py.class
+
+# Local development settings
+*.log
+*.env
+*.pot
+local_settings.py
+
+# Media files
+media/
+
+# Compiled Python bytecode
+*.pyc
+
+# Database files
+*.sqlite3
+
+# IDE settings
+.vscode/
+.idea/
+
+# Dependency directories
+myvenv/
+venv/
+node_modules/
+
+# Archivos de dependencias de Python
+pip-lock.txt
+pipenv.lock
+pipenv.lock.cpython-*.py
+
+# Otros archivos y directorios
+*.pydevproject
+*.bak
+*.swp
+*~
+.DS_Store
+
