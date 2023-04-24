@@ -8,10 +8,11 @@ __pycache__
 *.log
 *.env
 *.pot
-local_settings.py
+# local_settings.py
+# settings.py
 
 # Media files
-media/
+# media/
 
 # Compiled Python bytecode
 *.pyc
@@ -26,6 +27,7 @@ media/
 # Dependency directories
 myvenv/
 venv/
+myvenvlaptop/
 node_modules/
 
 # Archivos de dependencias de Python
