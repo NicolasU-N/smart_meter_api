@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from smart_meter_api.views.device_all import DevicesAll
 
 
 # Routers provide an easy way of automatically determining the URL conf.
@@ -19,4 +20,5 @@ urlpatterns = [
     path("register/", RegisterUserAPIView.as_view(), name="register"),
     path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("devices/", DevicesAll.as_view({'get': 'list'}), name="devices"),
 ]

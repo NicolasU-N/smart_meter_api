@@ -9,18 +9,17 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 from datetime import timedelta
 import environ
 
 env = environ.Env()
-# reading .env file
-environ.Env.read_env()
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# reading .env file
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 
 # Quick-start development settings - unsuitable for production
@@ -38,6 +37,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # ?channels v4.0 use dapne instead of channels
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "corsheaders",
+    "mqttasgi",
 ]
 
 MIDDLEWARE = [
@@ -80,18 +82,21 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "project.wsgi.application"
+# WSGI_APPLICATION = "project.wsgi.application"
+ASGI_APPLICATION = "project.asgi.application"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
