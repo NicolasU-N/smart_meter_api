@@ -9,15 +9,15 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
-
 django.setup()
 
 from .models import Device
+from smart_meter_api.models import Measurement
 
 
 class MyMqttConsumer(MqttConsumer):
     async def connect(self):
-        await self.subscribe("my/testing/topic", 0)
+        await self.subscribe("iot/smart_meters/data", 0)
 
     async def receive(self, mqtt_message):
         print(
@@ -26,23 +26,39 @@ class MyMqttConsumer(MqttConsumer):
         print(f"With payload: { mqtt_message['payload'] }")
         print(f"And QOS: { mqtt_message['qos']}\n")
 
-        # ? update
-        # device = await sync_to_async(Device.objects.get)(eui='70-b3-d5-49-98-9c-58-a4')
-        # device.rssi = -200
-        # await sync_to_async(device.save)()
         # ? create new device
         try:
             payload = json.loads(mqtt_message["payload"].decode("UTF-8"))
             # validate payload contains required keys
             if all(key in payload for key in ("EUI", "RSSI", "SNR", "Payload")):
-                device = await sync_to_async(Device.objects.create)(
-                    eui=payload["EUI"],
+                device, created = await sync_to_async(Device.objects.get_or_create)(
+                    eui=payload["EUI"]
+                )
+                device.updated_at = datetime.now()
+                await sync_to_async(device.save)()
+                print(f"Device {device.eui} {'created' if created else 'updated'}")
+
+                measurement = Measurement(
+                    device=device,
                     rssi=payload["RSSI"],
                     snr=payload["SNR"],
                     payload=payload["Payload"],
                 )
-                await sync_to_async(device.save)()
-                print(f"Device {device.eui} created")
+                # print("measurement: ", measurement.payload)
+                if measurement.payload:
+                    try:
+                        payload_json = json.loads(measurement.payload)
+                        print("json payload: ", payload_json)
+                        measurement.volume = payload_json["vol"]
+                        measurement.battery_level = payload_json["batt_lvl"]
+                    except json.JSONDecodeError:
+                        print("ERROR JSON LOAD")
+                        pass
+                await sync_to_async(measurement.save)()
+                print(
+                    f"Measurement for Device {measurement.device.eui} created/updated"
+                )
+
                 # ? channel layer: send message to websocket
                 await self.channel_layer.group_send(
                     "dashboard",
@@ -63,7 +79,7 @@ class MyMqttConsumer(MqttConsumer):
             print(f"Error processing message: {e}")
 
     async def disconnect(self):
-        await self.unsubscribe("my/testing/topic")
+        await self.unsubscribe("iot/smart_meters/data")
 
 
 class MyWsConsumer(AsyncWebsocketConsumer):
