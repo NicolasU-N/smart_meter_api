@@ -51,6 +51,22 @@ class MyMqttConsumer(MqttConsumer):
                         print("json payload: ", payload_json)
                         measurement.volume = payload_json["vol"]
                         measurement.battery_level = payload_json["batt_lvl"]
+
+                        message = {
+                            "id": device.id,
+                            "eui": device.eui,
+                            "rssi": measurement.rssi,
+                            "snr": measurement.snr,
+                            "volume": measurement.volume,
+                            "battery_level": measurement.battery_level,
+                            "updated_at": device.updated_at.isoformat() + "Z",
+                        }
+
+                        # ? channel layer: send message to websocket
+                        await self.channel_layer.group_send(
+                            "dashboard",
+                            {"type": "ws_dashboard_data", "value": message},
+                        )
                     except json.JSONDecodeError:
                         print("ERROR JSON LOAD")
                         pass
@@ -59,11 +75,6 @@ class MyMqttConsumer(MqttConsumer):
                     f"Measurement for Device {measurement.device.eui} created/updated"
                 )
 
-                # ? channel layer: send message to websocket
-                await self.channel_layer.group_send(
-                    "dashboard",
-                    {"type": "ws_dashboard_data", "value": payload["Payload"]},
-                )
             else:
                 # print(f"Invalid payload received: {mqtt_message['payload']}")
                 print(

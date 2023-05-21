@@ -153,7 +153,23 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000"]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://127.0.0.1:3000",  # Reemplaza con la URL de tu aplicación React
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+]
+
+CORS_ALLOW_HEADERS = [
+    "Content-Type",
+    "authorization",
+    "Access-Control-Allow-Origin",
+    
+]
 
 
 REST_FRAMEWORK = {
