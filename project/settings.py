@@ -168,7 +168,6 @@ CORS_ALLOW_HEADERS = [
     "Content-Type",
     "authorization",
     "Access-Control-Allow-Origin",
-    
 ]
 
 
