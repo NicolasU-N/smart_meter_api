@@ -42,6 +42,10 @@ class MyMqttConsumer(MqttConsumer):
                     device=device,
                     rssi=payload["RSSI"],
                     snr=payload["SNR"],
+                    modinfo=payload["Modinf"],
+                    codrate=payload["CodRate"],
+                    freq=payload["Freq"],
+                    size=payload["Size"],
                     payload=payload["Payload"],
                 )
                 # print("measurement: ", measurement.payload)
@@ -50,7 +54,7 @@ class MyMqttConsumer(MqttConsumer):
                         payload_json = json.loads(measurement.payload)
                         print("json payload: ", payload_json)
                         measurement.volume = payload_json["vol"]
-                        measurement.battery_level = payload_json["batt_lvl"]
+                        measurement.battery_level = payload_json["batt_lvl"] 
 
                         message = {
                             "id": device.id,
