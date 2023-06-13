@@ -5,6 +5,7 @@ class Device(models.Model):
     id = models.AutoField(primary_key=True)
     # _id = models.CharField(max_length=64, blank=True, null=True)
     eui = models.CharField(max_length=128, blank=True, null=True)
+    last_consumption = models.FloatField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
 

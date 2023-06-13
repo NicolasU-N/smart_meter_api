@@ -10,7 +10,9 @@ from smart_meter_api.views.register import RegisterUserAPIView
 from smart_meter_api.views.logout import LogoutView
 from smart_meter_api.views.device_all import DeviceViewSet
 from smart_meter_api.views.device_measurements import MeasurementList
-
+from smart_meter_api.views.custom_token_obtain_pair_view import (
+    CustomTokenObtainPairView,
+)
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -21,7 +23,7 @@ router.register(r"users", UserViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("register/", RegisterUserAPIView.as_view(), name="register"),
-    path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("verify/", TokenVerifyView.as_view(), name="token_verify"),

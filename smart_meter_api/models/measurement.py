@@ -24,7 +24,7 @@ class Measurement(models.Model):
         if self.payload:
             try:
                 payload_json = json.loads(self.payload)
-                print("in models: ",payload_json)
+                # print("in models: ", payload_json)
                 self.volume = payload_json["vol"]
                 self.battery_level = payload_json["batt_lvl"]
             except json.JSONDecodeError:

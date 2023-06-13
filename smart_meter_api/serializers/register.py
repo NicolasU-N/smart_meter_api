@@ -4,18 +4,32 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from django.core.exceptions import ValidationError
+
+
+def validate_username(username):
+    # Puedes personalizar esta función de validación según tus necesidades.
+    if len(username) < 3:
+        raise ValidationError("Username must be at least 3 characters long.")
+    if User.objects.filter(username=username).exists():
+        raise ValidationError("Username is already taken.")
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True, validators=[UniqueValidator(queryset=User.objects.all())]
     )
 
+    username = serializers.CharField(
+        validators=[validate_username]
+    )  # Aquí reemplazamos el validador por defecto
+
     password = serializers.CharField(
         write_only=True, required=True, validators=[validate_password]
     )
 
     password_confirm = serializers.CharField(write_only=True, required=True)
-    
+
     access = serializers.SerializerMethodField()
     refresh = serializers.SerializerMethodField()
 
@@ -33,8 +47,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             "refresh",
         )
         extra_kwargs = {
-            "first_name": {"required": True},
-            "last_name": {"required": True},
+            "first_name": {"required": False},
+            "last_name": {"required": False},
         }
 
     def validate(self, attrs):
@@ -49,8 +63,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create(
             username=validated_data["username"],
             email=validated_data["email"],
-            first_name=validated_data["first_name"],
-            last_name=validated_data["last_name"],
+            first_name=validated_data.get("first_name", ""),
+            last_name=validated_data.get("last_name", ""),
             is_active=True,
         )
 
