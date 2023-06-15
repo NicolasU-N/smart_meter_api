@@ -14,6 +14,13 @@ from smart_meter_api.views.custom_token_obtain_pair_view import (
     CustomTokenObtainPairView,
 )
 
+from smart_meter_api.views.aggregate_data import (
+    DeviceCountView,
+    MonthlyUsageView,
+    MonthlyAverageUsageView,
+)
+
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r"users", UserViewSet)
@@ -29,5 +36,21 @@ urlpatterns = [
     path("verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("devices/", DeviceViewSet.as_view({"get": "list"}), name="devices"),
     # {"get": "list"}
-    path("measurements/", MeasurementList.as_view(), name="measurement-list"),
+    path("devices/measurements/", MeasurementList.as_view(), name="measurement-list"),
+    # ?----------------------------------------------------------------------------------
+    path(
+        "agg_data/dev_count/<int:user_id>/",
+        DeviceCountView.as_view(),
+        name="device-count",
+    ),
+    path(
+        "agg_data/usage/<int:user_id>/<int:year>/<int:month>/",
+        MonthlyUsageView.as_view(),
+        name="monthly-usage",
+    ),
+    path(
+        "agg_data/average-usage/<int:user_id>/<int:year>/<int:month>/",
+        MonthlyAverageUsageView.as_view(),
+        name="monthly-average-usage",
+    ),
 ]

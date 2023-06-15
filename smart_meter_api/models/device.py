@@ -1,8 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Device(models.Model):
     id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     # _id = models.CharField(max_length=64, blank=True, null=True)
     eui = models.CharField(max_length=128, blank=True, null=True)
     last_consumption = models.FloatField(null=True)

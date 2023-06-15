@@ -21,13 +21,13 @@ class Measurement(models.Model):
         return f"Measurement for {self.device} at {self.timestamp}"
 
     def save(self, *args, **kwargs):
-        if self.payload:
-            try:
-                payload_json = json.loads(self.payload)
-                # print("in models: ", payload_json)
-                self.volume = payload_json["vol"]
-                self.battery_level = payload_json["batt_lvl"]
-            except json.JSONDecodeError:
-                print("ERROR JSON LOAD IN MODELS")
-                pass
+        # if self.payload:
+        #     try:
+        #         payload_json = json.loads(self.payload)
+        #         # print("in models: ", payload_json)
+        #         self.volume = payload_json["vol"]
+        #         self.battery_level = payload_json["batt_lvl"]
+        #     except json.JSONDecodeError:
+        #         print("ERROR JSON LOAD IN MODELS")
+        #         pass
         super().save(*args, **kwargs)
