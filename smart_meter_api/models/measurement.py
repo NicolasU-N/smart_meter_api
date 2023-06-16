@@ -12,6 +12,7 @@ class Measurement(models.Model):
     codrate = models.CharField(max_length=32, blank=True, null=True)
     freq = models.FloatField(null=True)
     size = models.IntegerField(null=True)
+    water_consumption = models.FloatField(null=True)  # new field
     volume = models.FloatField(null=True)
     battery_level = models.FloatField(null=True)
     payload = models.CharField(max_length=512, blank=True, null=True)

@@ -40,6 +40,15 @@ async def process_mqtt_message(mqtt_message):
                     await sync_to_async(device.save)()
 
                     # Create measurement
+                    previous_measurement = await sync_to_async(
+                        Measurement.objects.filter(device=device).last
+                    )()
+
+                    if previous_measurement is not None:
+                        water_consumption = float(volume) - previous_measurement.volume
+                    else:
+                        water_consumption = float(volume)
+
                     measurement = Measurement(
                         device=device,
                         rssi=payload["RSSI"],
@@ -51,6 +60,7 @@ async def process_mqtt_message(mqtt_message):
                         payload=payload["Payload"],
                         volume=float(volume),
                         battery_level=float(battery_level),
+                        water_consumption=water_consumption,
                     )
 
                     await sync_to_async(measurement.save)()

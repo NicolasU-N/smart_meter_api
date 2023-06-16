@@ -46,7 +46,7 @@ class MonthlyUsageView(APIView):
         devices = Device.objects.filter(user=user)
         total_usage = Measurement.objects.filter(
             device__in=devices, created_at__year=year, created_at__month=month
-        ).aggregate(total_volume=Sum("volume"))["total_volume"]
+        ).aggregate(total_volume=Sum("water_consumption"))["total_volume"]
 
         return Response({"total_usage": total_usage})
 
@@ -65,7 +65,7 @@ class MonthlyAverageUsageView(APIView):
         devices = Device.objects.filter(user=user)
         avg_usage = Measurement.objects.filter(
             device__in=devices, created_at__year=year, created_at__month=month
-        ).aggregate(avg_volume=Avg("volume"))["avg_volume"]
+        ).aggregate(avg_volume=Avg("water_consumption"))["avg_volume"]
 
         return Response({"avg_usage": avg_usage})
 
