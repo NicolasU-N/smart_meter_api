@@ -9,7 +9,7 @@ from smart_meter_api.views.users import UserViewSet
 from smart_meter_api.views.register import RegisterUserAPIView
 from smart_meter_api.views.logout import LogoutView
 from smart_meter_api.views.device_all import DeviceViewSet
-from smart_meter_api.views.device_measurements import MeasurementList
+from smart_meter_api.views.device_measurements import MeasurementList, CurrentWeekMeasurementsList, LastWeekMeasurementsList
 from smart_meter_api.views.custom_token_obtain_pair_view import (
     CustomTokenObtainPairView,
 )
@@ -37,6 +37,8 @@ urlpatterns = [
     path("devices/", DeviceViewSet.as_view({"get": "list"}), name="devices"),
     # {"get": "list"}
     path("devices/measurements/", MeasurementList.as_view(), name="measurement-list"),
+    path("devices/<int:device_id>/measurements/this-week/", CurrentWeekMeasurementsList.as_view(), name="current-week-measurements"),
+    path("devices/<int:device_id>/measurements/last-week/", LastWeekMeasurementsList.as_view(), name="last-week-measurements"),
     # ?----------------------------------------------------------------------------------
     path(
         "agg_data/dev_count/<int:user_id>/",
